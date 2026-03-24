@@ -1,5 +1,8 @@
 from pathlib import Path
 
+from src.models.sanchez import compute_sanchez
+from src.visualisation.sanchez import save_sanchez_preview
+
 from src.io.loader import find_scene_folders, load_scene
 from src.visualisation.rgb import save_rgb_preview
 from src.visualisation.varon import (
@@ -20,7 +23,7 @@ def main():
         print("Nie znaleziono scen.")
         return
 
-    for folder in scene_folders[:5]:
+    for folder in scene_folders[21:30]:
         scene = load_scene(folder)
 
         print("Scene ID:", scene["scene_id"])
@@ -39,6 +42,14 @@ def main():
         save_anomaly_mask(v, Path("outputs/mask") / f"{scene['scene_id']}_mask.png")
 
         print("-" * 40)
+
+
+        S, B12_hat = compute_sanchez(scene["image"])
+
+        save_sanchez_preview(
+            S,
+            Path("outputs/sanchez") / f"{scene['scene_id']}_sanchez.png"
+        )
 
 
 if __name__ == "__main__":

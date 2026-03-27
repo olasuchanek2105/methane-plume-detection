@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from src.models.sanchez import compute_sanchez
-from src.visualisation.sanchez import save_sanchez_preview
+from src.models.sanchez import compute_sanchez_basic, compute_sanchez_robust
+from src.visualisation.sanchez import save_sanchez_preview, save_sanchez_map_preview, save_mask_preview
 
 from src.io.loader import find_scene_folders, load_scene
 from src.visualisation.rgb import save_rgb_preview
@@ -13,7 +13,7 @@ from src.visualisation.varon import (
     save_anomaly_mask,
     print_varon_stats,
 )
-
+from src.visualisation.pseudorgb import make_pseudorgb, save_pseudorgb_preview
 
 def main():
     data_dir = Path("data")
@@ -23,7 +23,7 @@ def main():
         print("Nie znaleziono scen.")
         return
 
-    for folder in scene_folders[21:30]:
+    for folder in scene_folders[0:5]:
         scene = load_scene(folder)
 
         print("Scene ID:", scene["scene_id"])
@@ -40,17 +40,28 @@ def main():
         save_varon_histogram(v, Path("outputs/hist") / f"{scene['scene_id']}_hist.png")
         save_varon_center(v, Path("outputs/center") / f"{scene['scene_id']}_center.png")
         save_anomaly_mask(v, Path("outputs/mask") / f"{scene['scene_id']}_mask.png")
+        
 
         print("-" * 40)
 
 
-        S, B12_hat = compute_sanchez(scene["image"])
+        S, B12_hat, mask = compute_sanchez_robust(scene["image"])
 
         save_sanchez_preview(
             S,
             Path("outputs/sanchez") / f"{scene['scene_id']}_sanchez.png"
         )
+        save_sanchez_map_preview(
+            S, Path("outputs/sanchez_map") / f"{scene['scene_id']}_sanchez.png"
+        )
+        save_mask_preview(mask,  Path("outputs/mask.png") / f"{scene['scene_id']}_sanchez.png")
 
+        pseudo = make_pseudorgb(v, S)
+
+        save_pseudorgb_preview(
+            pseudo,
+            Path("outputs/pseudorgb") / f"{scene['scene_id']}_pseudorgb.png"
+        )
 
 if __name__ == "__main__":
     main()

@@ -46,7 +46,7 @@ def compute_sanchez_robust(img: np.ndarray):
 
     B12 = img[11]
 
-    band_ids = [5,6,7,8,10]
+    band_ids = [6,7,8,10]
     X_img = img[band_ids]
 
     H,W = B12.shape

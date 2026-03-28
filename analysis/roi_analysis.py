@@ -13,7 +13,7 @@ from src.visualisation.varon import compute_varon
 from src.visualisation.pseudorgb import make_pseudorgb
 
 
-def crop_roi(arr: np.ndarray, center_row: int, center_col: int, half_size: int = 150):
+def crop_roi(arr: np.ndarray, center_row: int, center_col: int, half_size: int = 250):
     h, w = arr.shape[:2]
 
     r0 = max(center_row - half_size, 0)
@@ -95,8 +95,9 @@ def main():
     df = pd.read_csv(csv_path)
 
     # na start weź 5 rekordów, potem zwiększysz do 10
-    df_subset = df.iloc[:5]
-
+    # df_subset = df.iloc[235:240]
+    df_subset = df.nlargest(5, "methane_rate")
+    
     print("Liczba rekordów do analizy:", len(df_subset))
 
     for idx, row in df_subset.iterrows():

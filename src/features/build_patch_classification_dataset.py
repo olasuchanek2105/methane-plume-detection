@@ -14,7 +14,7 @@ from src.io.loader import load_scene
 def build_multichannel_image(scene):
 
     img = scene["image"][:12].astype(np.float32) / 10000.0
-    band_ids = [5, 6, 7, 8, 10, 11]
+    band_ids = [6, 7, 8, 10]
 
     X = img[band_ids]
     X = np.transpose(X, (1,2,0))

@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 
 class MethanePatchDataset(Dataset):
-    def __int__(self, x_path, y_path, meta_path=None):
+    def __init__(self, x_path, y_path, meta_path=None):
         self.X = np.load(x_path)
         self.Y = np.load(y_path)
         
@@ -23,11 +23,9 @@ class MethanePatchDataset(Dataset):
     def __getitem__(self, idx):
         x = self.X[idx]
         y = self.Y[idx]
-
-        x = np.transpose(x, (2,0,1)) # z (H, W, C) na (C, H, W)
-
         x = self.X[idx].astype(np.float32)
-        y = torch.tensor(y, dtype=torch.tensor)
+        x = np.transpose(x, (2,0,1)) # z (H, W, C) na (C, H, W)
+        y = torch.tensor(y, dtype=torch.long)
         
         return x,y
     

@@ -194,9 +194,11 @@ def main():
     print("y_data shape:", y_data.shape)
     print(meta_df["label"].value_counts())
 
-    np.save("outputs/X_data.npy", X_data)
-    np.save("outputs/y_data.npy", y_data)
-    meta_df.to_csv("outputs/meta_data.csv", index=False)
+    out_dir = Path("outputs/dataset")
+
+    np.save(out_dir/"X_data.npy", X_data)
+    np.save(out_dir/"y_data.npy", y_data)
+    meta_df.to_csv(out_dir/"meta_data.csv", index=False)
 
     debug_dir = Path("outputs/debug_patches")
     debug_dir.mkdir(parents=True, exist_ok=True)

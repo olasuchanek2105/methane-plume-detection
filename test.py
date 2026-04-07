@@ -72,7 +72,6 @@ from pathlib import Path
 def main():
     data_dir = Path("data")
 
-    # 🔥 Twoje top 5 scen
     top_scenes = [
         "00ba2312cab12f013293d0c63f194223",
         "bcd498d38cea7ccb05e3ec7727333221",
@@ -85,7 +84,7 @@ def main():
         folder = data_dir / folder_id
 
         if not folder.exists():
-            print("❌ Brak folderu:", folder)
+            print("Brak folderu:", folder)
             continue
 
         print("\n" + "=" * 50)
@@ -136,9 +135,9 @@ def main():
             Path("outputs/pseudorgb") / f"{scene['scene_id']}_pseudorgb.png"
         )
 
-        print("✅ Zrobione:", folder_id)
+        print("Zrobione:", folder_id)
 
-    print("\nDONE 🚀")
+    print("\nDONE")
 
 
 if __name__ == "__main__":

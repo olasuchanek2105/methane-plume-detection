@@ -23,8 +23,6 @@ def build_multichannel_image(scene):
     S = np.expand_dims(S, axis=-1)
     X = np.concatenate([X, S], axis=-1)
 
-    print(X.shape)
-
     return X
 
 
@@ -117,7 +115,8 @@ def main():
 
     data_dir = Path("data")
     df = pd.read_csv(data_dir / "final_dataset_2024_stratified.csv")
-    df_subset = df.nlargest(5, "methane_rate")
+    df_subset = df.nlargest(20, "methane_rate")
+    # df_subset = df
 
     X_list = []
     y_list = []
@@ -179,8 +178,8 @@ def main():
                 "label": label,
             })
 
-    print("Liczba patchy:", len(X_list))
-    print("Liczba etykiet:", len(y_list))
+    # print("Liczba patchy:", len(X_list))
+    # print("Liczba etykiet:", len(y_list))
 
     if len(X_list) == 0:
         print("Nie zebrano żadnych patchy.")
@@ -190,9 +189,9 @@ def main():
     y_data = np.array(y_list)
     meta_df = pd.DataFrame(meta_list)
 
-    print("X_data shape:", X_data.shape)
-    print("y_data shape:", y_data.shape)
-    print(meta_df["label"].value_counts())
+    # print("X_data shape:", X_data.shape)
+    # print("y_data shape:", y_data.shape)
+    # print(meta_df["label"].value_counts())
 
     out_dir = Path("outputs/dataset")
 

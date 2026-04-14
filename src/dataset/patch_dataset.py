@@ -1,3 +1,15 @@
+"""
+PyTorch Dataset for methane plume patches.
+
+Loads precomputed image patches (X) and labels (Y) from .npy files.
+Each sample is converted to float32 and reshaped from (H, W, C) to (C, H, W)
+to match PyTorch input format.
+
+Optionally loads metadata from a CSV file.
+
+Used for training and evaluation of models on methane detection patches.
+"""
+
 from torch.utils.data import Dataset
 import numpy as np
 import pandas as pd
@@ -21,7 +33,6 @@ class MethanePatchDataset(Dataset):
         return len(self.X)
 
     def __getitem__(self, idx):
-        x = self.X[idx]
         y = self.Y[idx]
         x = self.X[idx].astype(np.float32)
         x = np.transpose(x, (2,0,1)) # z (H, W, C) na (C, H, W)

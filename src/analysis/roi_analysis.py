@@ -1,5 +1,21 @@
-from pathlib import Path
+"""
+ROI analysis for selected methane plume scenes.
 
+The script loads a small subset of scenes (top by methane_rate) and
+creates local visualizations around the given source coordinates.
+
+For each scene:
+- computes Varon and Sánchez maps,
+- generates pseudoRGB,
+- extracts a ROI around the source location,
+- creates a local anomaly mask from the Sánchez map,
+- saves RGB, pseudoRGB, heatmap and mask images.
+
+Used for quick visual inspection and debugging before building a training dataset.
+"""
+
+
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import rasterio

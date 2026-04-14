@@ -1,3 +1,17 @@
+"""
+Builds a patch dataset for methane plume detection.
+
+The script loads selected scenes, creates two multichannel images, one from
+spectral bands and the Sánchez map and second pseudo RGB from Sanchez and Varon, then samples patches around the
+known source location.
+
+Patches close to the source are labeled as positive, and patches far
+from the source are labeled as negative. The final patches, labels,
+and metadata are saved to disk.
+
+A few example patches are also saved for debugging and visual inspection.
+"""
+
 import pandas as pd
 import numpy as np
 import rasterio
@@ -7,9 +21,8 @@ import matplotlib.pyplot as plt
 
 from src.models.sanchez import compute_sanchez_robust
 from src.io.loader import load_scene
-
-
-
+from src.visualisation.pseudorgb import make_pseudorgb
+from src.visualisation.varon import compute_varon
 
 def build_multichannel_image(scene):
 
@@ -26,6 +39,16 @@ def build_multichannel_image(scene):
     return X
 
 
+def build_pseudorgb_image(scene):
+    v, _, _ = compute_varon(scene["image"])
+    S, _, _ = compute_sanchez_robust(scene["image"])
+
+    pseudo = make_pseudorgb(v, S)
+    pseudo = pseudo.astype(np.float32)
+
+    return pseudo  # (H, W, 3)
+
+
 def latlon_to_pixel(tiff_path, lat, lon):
     with rasterio.open(tiff_path) as ds:
         row_px, col_px = ds.index(lon, lat)
@@ -37,7 +60,7 @@ def sample_patch_centers(
     source_row, source_col,
     patch_size=256,
     n_positive=20,
-    n_negative=40,
+    n_negative=20,
     near_radius=64,
     far_radius=192,
     random_state=42
@@ -115,12 +138,14 @@ def main():
 
     data_dir = Path("data")
     df = pd.read_csv(data_dir / "final_dataset_2024_stratified.csv")
-    df_subset = df.nlargest(20, "methane_rate")
+    df_subset = df.nlargest(10, "methane_rate") #bierzemy sceny z najwieksza emisja metanu, 10 najwiekszych
     # df_subset = df
 
     X_list = []
     y_list = []
     meta_list = []
+    X_pseudo_list = []
+
 
     for _, row in df_subset.iterrows():
         folder_id = row["folder_id"]
@@ -135,6 +160,7 @@ def main():
 
         scene = load_scene(folder)
         X = build_multichannel_image(scene)
+        X_pseudo = build_pseudorgb_image(scene)
 
         tiff_path = scene["tiff_path"]
         source_row, source_col = latlon_to_pixel(tiff_path, lat, lon)
@@ -154,6 +180,7 @@ def main():
 
         for center_row, center_col in centers:
             patch = extract_patch(X, center_row, center_col, patch_size=patch_size)
+            patch_pseudo = extract_patch(X_pseudo, center_row, center_col, patch_size=patch_size)
             label, distance = label_patch(
                 center_row, center_col,
                 source_row, source_col,
@@ -166,6 +193,8 @@ def main():
 
             X_list.append(patch)
             y_list.append(label)
+            
+            X_pseudo_list.append(patch_pseudo)
 
             meta_list.append({
                 "folder_id": folder_id,
@@ -189,6 +218,8 @@ def main():
     y_data = np.array(y_list)
     meta_df = pd.DataFrame(meta_list)
 
+    X_pseudo_data = np.stack(X_pseudo_list)
+
     # print("X_data shape:", X_data.shape)
     # print("y_data shape:", y_data.shape)
     # print(meta_df["label"].value_counts())
@@ -198,6 +229,8 @@ def main():
     np.save(out_dir/"X_data.npy", X_data)
     np.save(out_dir/"y_data.npy", y_data)
     meta_df.to_csv(out_dir/"meta_data.csv", index=False)
+
+    np.save(out_dir / "X_pseudo_data.npy", X_pseudo_data)
 
     debug_dir = Path("outputs/debug_patches")
     debug_dir.mkdir(parents=True, exist_ok=True)

@@ -1,3 +1,6 @@
+"Only for test if patch_dataset works corectlly"
+
+
 from src.dataset.patch_dataset import MethanePatchDataset
 from torch.utils.data import DataLoader
 
@@ -11,8 +14,6 @@ dataset = MethanePatchDataset(
 loader = DataLoader(dataset, batch_size=16, shuffle=True)
 
 print("Liczba próbek:", len(dataset))
-
-
 
 x, y = dataset[0]
 print("x shape:", x.shape)

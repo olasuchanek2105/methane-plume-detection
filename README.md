@@ -33,6 +33,23 @@ Current results indicate that the model is able to learn useful patterns from th
 
 ---
 
+## Pipeline
+
+### 1. Build dataset
+To create patch-based dataset:
+
+python -m src.features.build_patch_classification
+
+This generates .npy files with patches and labels.
+
+### 2. Train model
+To train CNN classifier:
+
+python -m src.models.train_patch_classifier
+
+### 3. Outputs
+Trained models and logs are saved in /outputs
+
 ## Notes
 
 This is an ongoing research project. The current implementation is intended for experimentation and validation rather than final deployment.

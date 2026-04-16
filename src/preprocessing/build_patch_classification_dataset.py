@@ -139,6 +139,7 @@ def main():
     data_dir = Path("data")
     df = pd.read_csv(data_dir / "final_dataset_2024_stratified.csv")
     df_subset = df.nlargest(10, "methane_rate") #bierzemy sceny z najwieksza emisja metanu, 10 najwiekszych
+    df_subset = df.sample(n=20, random_state=42)
     # df_subset = df
 
     X_list = []

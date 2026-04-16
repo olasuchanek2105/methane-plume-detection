@@ -11,7 +11,7 @@ def save_sanchez_preview(s: np.ndarray, out_path: str | Path):
     vmax = np.nanpercentile(s, 98)
 
     plt.figure(figsize=(8, 8))
-    plt.imshow(s, cmap="grey", vmin=vmin, vmax=vmax)
+    plt.imshow(s, cmap="gray", vmin=vmin, vmax=vmax)
     plt.title("Sanchez")
     plt.colorbar()
     plt.axis("off")

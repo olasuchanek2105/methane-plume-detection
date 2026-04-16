@@ -1,3 +1,15 @@
+"""
+Grad-CAM visualization for patch-based methane plume classification.
+
+This script loads a trained CNN model and generates Grad-CAM heatmaps
+for selected image patches. It visualizes:
+- RGB patch preview (pseudo-RGB from selected bands)
+- Sánchez residual map (S)
+- Grad-CAM attention map
+- Overlay of Sánchez + Grad-CAM
+"""
+
+
 from pathlib import Path
 
 import matplotlib
@@ -6,6 +18,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn.functional as F
+import random
+
 from torch.utils.data import DataLoader
 
 from src.dataset.patch_dataset import MethanePatchDataset
@@ -177,11 +191,11 @@ def main():
         true = int(y.item())
         prob_class1 = float(probs[1])
 
-        # Tylko false negatives: prawdziwy plume, ale model przewidział 0
+        # Tylko false negatives
         # if not (true == 1 and pred == 1):
         #     continue
 
-        import random
+        
 
         # tylko predykcje = 1
         if pred != 1:

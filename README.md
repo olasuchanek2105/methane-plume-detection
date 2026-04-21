@@ -14,7 +14,9 @@ The work is currently in progress and focuses on building a reliable machine lea
 * Construction of a patch-based dataset around known emission locations
 * Training a CNN model for binary classification (plume / no plume)
 * Train/validation split performed at the scene level to avoid data leakage
-
+* Initial experiments with Transformer-based architectures, including Vision Transformer (ViT), to evaluate their effectiveness on multispectral satellite data
+* Comparative analysis of CNN and ViT models in terms of performance and generalization
+* Planned exploration of fully self-attention-based models
 ---
 
 ## Status
